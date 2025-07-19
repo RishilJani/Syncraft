@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:syncraft/project_progress/project_progress_screen.dart';
 import 'project_controller.dart';
+import 'project_model.dart';
 
 class ProjectListScreen extends StatelessWidget {
   final ProjectController controller = Get.find<ProjectController>();
@@ -35,7 +37,7 @@ class ProjectListScreen extends StatelessWidget {
         return ListView.builder(
           itemCount: controller.projects.length,
           itemBuilder: (context, index) {
-            final project = controller.projects[index];
+            final Project project = controller.projects[index];
 
             return Card(
               elevation: 3,
@@ -49,7 +51,7 @@ class ProjectListScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      project['title'],
+                      project.name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -58,7 +60,7 @@ class ProjectListScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      project['description'],
+                      project.description,
                       style: const TextStyle(fontSize: 14, color: Colors.black87),
                     ),
                     const SizedBox(height: 10),
@@ -67,17 +69,18 @@ class ProjectListScreen extends StatelessWidget {
                         const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                         const SizedBox(width: 6),
                         Text(
-                          "Date: ${project['datetime']}",
+                          "Created: ${project.createdOn.split('T')[0]}",
                           style: const TextStyle(fontSize: 13, color: Colors.grey),
                         ),
                         const Spacer(),
                         ElevatedButton.icon(
                           onPressed: () {
-                            controller.setSelectedProject(project);
-                            Get.toNamed('/project-progress');
+                            Get.to(() => ProjectProgressScreen(), arguments: {
+                              'project': project,
+                            });
                           },
                           icon: const Icon(Icons.bar_chart, size: 18),
-                          label: const Text('Progress',style: TextStyle(color: Colors.white),),
+                          label: const Text('Progress', style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.purple,
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class TeamController extends GetxController {
-  final String baseUrl = 'https://67c846b00acf98d07085c742.mockapi.io/teams'; // Replace this
+  final String baseUrl = 'https://syncraft-api-server.onrender.com/teams/by-admin/1'; // Replace this
   RxList<dynamic> teams = [].obs;
   RxBool isLoading = false.obs;
 
