@@ -7,16 +7,21 @@ import 'project_model.dart';
 class ProjectListScreen extends StatelessWidget {
   final ProjectController controller = Get.find<ProjectController>();
 
+  // Theme Colors
+  static const Color deepTeal = Color(0xFF015054);
+  static const Color yellowishWhite = Color(0xFFEBF1CF);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: yellowishWhite,
       appBar: AppBar(
         title: const Text('All Projects'),
-        backgroundColor: Colors.purple,
+        backgroundColor: deepTeal,
         actions: [
           IconButton(
             onPressed: () => Get.toNamed('/add-project'),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Icons.add, color: yellowishWhite),
           )
         ],
       ),
@@ -40,6 +45,7 @@ class ProjectListScreen extends StatelessWidget {
             final Project project = controller.projects[index];
 
             return Card(
+              color: Colors.white,
               elevation: 3,
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               shape: RoundedRectangleBorder(
@@ -55,7 +61,7 @@ class ProjectListScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.purple,
+                        color: deepTeal,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -80,9 +86,10 @@ class ProjectListScreen extends StatelessWidget {
                             });
                           },
                           icon: const Icon(Icons.bar_chart, size: 18),
-                          label: const Text('Progress', style: TextStyle(color: Colors.white)),
+                          label: const Text('Progress'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple,
+                            backgroundColor: deepTeal,
+                            foregroundColor: yellowishWhite,
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             textStyle: const TextStyle(fontSize: 13),
                             shape: RoundedRectangleBorder(
