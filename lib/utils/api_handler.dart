@@ -1,6 +1,5 @@
-import 'dart:convert';
+import 'package:syncraft/utils/import_export.dart';
 import 'package:http/http.dart' as http;
-import 'package:syncraft/utils/string_constants.dart';
 
 class APIHandler {
   static final APIHandler _instance = APIHandler._internal();
@@ -10,14 +9,14 @@ class APIHandler {
 
   Future<dynamic> getUsers({context}) async {
     // showProgressDialog(context);
-    http.Response res = await http.get(Uri.parse(baseUrl)).timeout(timeout);
+    http.Response res = await http.get(Uri.parse(BASE_URL)).timeout(timeout);
     // dismissProgress();
     return convertJSONToData(res);
   }
 
   Future<dynamic> addUser({context, map}) async {
     // showProgressDialog(context);
-    http.Response res = await http.post(Uri.parse(baseUrl), body: map);
+    http.Response res = await http.post(Uri.parse(BASE_URL), body: map);
     // dismissProgress();
     return convertJSONToData(res);
   }
