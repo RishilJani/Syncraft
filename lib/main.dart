@@ -1,6 +1,11 @@
+import 'package:syncraft/admin/teams/team_controller.dart';
+import 'package:syncraft/app_pages.dart';
+import 'package:syncraft/admin/projects/project_controller.dart';
 import 'package:syncraft/utils/import_export.dart';
 
 void main() {
+  Get.put(ProjectController());
+  Get.put(TeamController());
   runApp(const MyApp());
 }
 
@@ -11,12 +16,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      initialRoute: RT_LOGIN_REGISTRATION_PAGE,
+      title: 'Project Management',
+      theme: ThemeData(primarySwatch: Colors.purple),
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
     );
   }
 }
@@ -40,13 +43,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
+
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+
         title: Text(widget.title),
       ),
       body: Center(
+
         child: Column(
+
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(

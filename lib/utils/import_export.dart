@@ -4,3 +4,8 @@ export 'package:get/get.dart';
 export 'package:syncraft/registration/registration_model.dart';
 export 'package:syncraft/registration/registration_controller.dart';
 export 'package:syncraft/registration/registration_view.dart';
+export 'package:syncraft/member/dashboard/team_member.dart';
+export 'package:syncraft/member/dashboard/member_project.dart';
+export 'package:syncraft/member/dashboard/member_task.dart';
+export 'package:get/get_state_manager/src/simple/get_controllers.dart';
+export 'package:syncraft/member/dashboard/member_model.dart';
