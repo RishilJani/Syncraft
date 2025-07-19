@@ -15,4 +15,12 @@ const String BTN_LOGIN = "Login";
 const String BTN_SIGNUP = "Sign Up";
 // endregion
 
+//region UTILS CONSTANTS
+const String ROBOTO = "Roboto";
+const String Nunito = "Nunito";
+//endregion
+
+//region APPBAR CONSTANTS
+const String APPBAR_TITLE = "Welcome to Syncraft";
+//endregion
 const String BASE_URL = 'https://syncraft-api-server.onrender.com';

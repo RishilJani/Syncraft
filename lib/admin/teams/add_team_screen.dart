@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../controllers/team_controller.dart';
+
+
+import '../../utils/import_export.dart';
 
 class AddTeamScreen extends StatelessWidget {
   final TeamController controller = Get.find();

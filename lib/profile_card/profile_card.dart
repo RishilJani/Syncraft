@@ -1,5 +1,6 @@
 import 'package:syncraft/utils/import_export.dart';
 
+
 class ProfileCardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -38,11 +39,11 @@ class ProfileCard extends StatelessWidget {
 
     return Container(
       width: 340,
-      padding: EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: Colors.lime[50],
-        boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black12)],
+        boxShadow: [const BoxShadow(blurRadius: 10, color: Colors.black12)],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -54,7 +55,7 @@ class ProfileCard extends StatelessWidget {
             children: [
               Container(
                 height: 120,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   gradient: LinearGradient(
                     colors: [Colors.indigo, Colors.purpleAccent],
@@ -63,7 +64,7 @@ class ProfileCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Positioned(
+              const Positioned(
                 bottom: -40,
                 child: CircleAvatar(
                   radius: 40,
@@ -73,41 +74,41 @@ class ProfileCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 48),
+          const SizedBox(height: 48),
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                Text(name, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                Text(name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 Text(role, style: TextStyle(color: Colors.grey[700])),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 InfoRow(label: 'Email', value: email),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Expanded(child: InfoRow(label: 'Tasks Done', value: '$tasksDone')),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(child: InfoRow(label: 'Tasks Left', value: '$tasksLeft')),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text("Progress", style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const SizedBox(height: 20),
+                const Text("Progress", style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
                 CircularPercentIndicator(
                   radius: 70.0,
                   lineWidth: 10.0,
                   percent: progress,
                   center: Text(
                     '${(progress * 100).toStringAsFixed(1)}%',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   progressColor: Colors.indigo,
                   backgroundColor: Colors.grey[300]!,
                   circularStrokeCap: CircularStrokeCap.round,
                   animation: true,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -117,19 +118,19 @@ class ProfileCard extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () => _launchURL('https://twitter.com/$name'),
-                      icon: FaIcon(FontAwesomeIcons.twitter, color: Colors.blue),
+                      icon: const FaIcon(FontAwesomeIcons.twitter, color: Colors.blue),
                     ),
                     IconButton(
                       onPressed: () => _launchURL('https://instagram.com/$name'),
-                      icon: FaIcon(FontAwesomeIcons.instagram, color: Colors.purple),
+                      icon: const FaIcon(FontAwesomeIcons.instagram, color: Colors.purple),
                     ),
                     IconButton(
                       onPressed: () => _launchURL('https://facebook.com/$name'),
-                      icon: FaIcon(FontAwesomeIcons.facebook, color: Colors.blueAccent),
+                      icon: const FaIcon(FontAwesomeIcons.facebook, color: Colors.blueAccent),
                     ),
                     IconButton(
                       onPressed: () => _launchURL('https://github.com/$name'),
-                      icon: FaIcon(FontAwesomeIcons.github, color: Colors.black),
+                      icon: const FaIcon(FontAwesomeIcons.github, color: Colors.black),
                     ),
                   ],
                 ),
@@ -162,9 +163,9 @@ class InfoRow extends StatelessWidget {
     return Row(
       children: [
         Icon(Icons.info_outline, size: 16, color: Colors.grey[600]),
-        SizedBox(width: 8),
-        Text('$label:', style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(width: 6),
+        const SizedBox(width: 8),
+        Text('$label:', style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(width: 6),
         Expanded(
           child: Text(value, style: TextStyle(color: Colors.grey[700]), overflow: TextOverflow.ellipsis),
         ),
