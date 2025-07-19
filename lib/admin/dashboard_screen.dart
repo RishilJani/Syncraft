@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:syncraft/admin/admin_profile_card_Screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
+  // Syncraft Theme Colors
+  static const Color syncraftDarkTeal = Color(0xFF064B4F);
+  static const Color syncraftMint = Color(0xFFADC4B2);
+  static const Color syncraftBlack = Color(0xFF1A1A1A);
+
   // Weekly Progress Chart
   Widget _buildWeeklyProgress() {
     final days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    final heights = [0.6, 0.9, 0.75, 0.5, 0.8, 0.4, 0.3]; // 0.0 - 1.0
+    final heights = [0.6, 0.9, 0.75, 0.5, 0.8, 0.4, 0.3];
 
     return Padding(
       padding: const EdgeInsets.only(top: 16),
@@ -35,7 +41,7 @@ class DashboardScreen extends StatelessWidget {
                           height: heights[index] * 120,
                           width: 36,
                           decoration: BoxDecoration(
-                            color: Colors.purple,
+                            color: syncraftMint,
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
@@ -52,7 +58,6 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
-
 
   // Reusable Project Card
   Widget _buildCard({
@@ -114,7 +119,7 @@ class DashboardScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(radius: 32, backgroundColor: Colors.purple),
+                CircleAvatar(radius: 32, backgroundColor: syncraftDarkTeal),
                 SizedBox(height: 12),
                 Text("Admin",
                     style:
@@ -125,24 +130,32 @@ class DashboardScreen extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.dashboard, color: Colors.purple),
+            leading: const Icon(Icons.dashboard, color: syncraftDarkTeal),
             title: const Text("Dashboard"),
             onTap: () => Get.toNamed('/dashboard'),
           ),
           ListTile(
-            leading: const Icon(Icons.list, color: Colors.purple),
+            leading: const Icon(Icons.list, color: syncraftDarkTeal),
             title: const Text("Projects"),
             onTap: () => Get.toNamed('/projects'),
           ),
           ListTile(
-            leading: const Icon(Icons.people, color: Colors.purple),
+            leading: const Icon(Icons.people, color: syncraftDarkTeal),
             title: const Text("Teams"),
             onTap: () => Get.toNamed('/teams'),
           ),
           ListTile(
-            leading: const Icon(Icons.person, color: Colors.purple),
+            leading: const Icon(Icons.person, color: syncraftDarkTeal),
             title: const Text("Profile"),
-            onTap: () => Get.toNamed('/profile'),
+            onTap: () {
+              Get.to(() => AdminProfileCardScreen(adminData: {
+                "name": "Vanita Kumar",
+                "description": "Admin of Syncraft",
+                "admin_id": "ADM001",
+                "due_date": "2025-08-01T00:00:00.000Z",
+                "created_on": "2025-07-01T00:00:00.000Z"
+              }));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
@@ -163,9 +176,18 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Admin Dashboard"),
         centerTitle: true,
-        backgroundColor: Colors.purple,
+        backgroundColor: syncraftDarkTeal,
+        elevation: 0,
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: ColoredBox(
+            color: syncraftMint, // 🔵 Bottom bar color here
+            child: SizedBox(height: 4.0),
+          ),
+        ),
       ),
-      backgroundColor: const Color(0xFFF8F6FF),
+
+      backgroundColor: syncraftMint,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -181,13 +203,13 @@ class DashboardScreen extends StatelessWidget {
                     title: "Projects",
                     subtitle: "All project tasks and progress",
                     route: '/projects',
-                    color: Colors.purple,
+                    color: syncraftDarkTeal,
                     progress: 0.7),
                 _buildCard(
                     title: "Teams",
                     subtitle: "Your team assignments",
                     route: '/teams',
-                    color: Colors.orange,
+                    color: syncraftDarkTeal,
                     progress: 0.6),
               ],
             )
@@ -195,22 +217,26 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _buildCard(
-                      title: "Projects",
-                      subtitle: "All project tasks and progress",
-                      route: '/projects',
-                      color: Colors.purple,
-                      progress: 0.7),
+                    title: "Projects",
+                    subtitle: "All project tasks and progress",
+                    route: '/projects',
+                    color: syncraftDarkTeal,
+                    progress: 0.7,
+                  ),
                 ),
+                const SizedBox(width: 16), // 🔶 Space between cards
                 Expanded(
                   child: _buildCard(
-                      title: "Teams",
-                      subtitle: "Your team assignments",
-                      route: '/teams',
-                      color: Colors.orange,
-                      progress: 0.6),
+                    title: "Teams",
+                    subtitle: "Your team assignments",
+                    route: '/teams',
+                    color: syncraftDarkTeal,
+                    progress: 0.6,
+                  ),
                 ),
               ],
             ),
+
             _buildWeeklyProgress(),
           ],
         ),

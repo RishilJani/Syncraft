@@ -1,17 +1,34 @@
+import 'dart:ui';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:syncraft/admin/teams/team_controller.dart';
 
-import '../../utils/import_export.dart';
+class AddTeamScreen extends StatefulWidget {
+  const AddTeamScreen({super.key});
 
-class AddTeamScreen extends StatelessWidget {
+  @override
+  State<AddTeamScreen> createState() => _AddTeamScreenState();
+}
+
+class _AddTeamScreenState extends State<AddTeamScreen> {
   final TeamController controller = Get.find();
 
   final TextEditingController teamNameController = TextEditingController();
   final TextEditingController memberIdController = TextEditingController();
 
+  final RxList<String> memberIds = <String>[].obs;
+
+  @override
+  void dispose() {
+    teamNameController.dispose();
+    memberIdController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    RxList<String> memberIds = <String>[].obs;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Team"),
@@ -33,11 +50,11 @@ class AddTeamScreen extends StatelessWidget {
             Obx(() => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Team Members:", style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text("Team Members:", style: TextStyle(fontWeight: FontWeight.bold)),
                 ...memberIds.map((id) => ListTile(
                   title: Text(id),
                   trailing: IconButton(
-                    icon: Icon(Icons.remove_circle, color: Colors.red),
+                    icon: const Icon(Icons.remove_circle, color: Colors.red),
                     onPressed: () => memberIds.remove(id),
                   ),
                 )),
@@ -64,7 +81,7 @@ class AddTeamScreen extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-                  child: const Text("Add",style: TextStyle(color: Colors.white),),
+                  child: const Text("Add", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -91,7 +108,7 @@ class AddTeamScreen extends StatelessWidget {
                 backgroundColor: Colors.purple,
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text("Create Team",style: TextStyle(color: Colors.white)),
+              child: const Text("Create Team", style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

@@ -40,6 +40,7 @@ class TeamListScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             final team = controller.teams[index];
             final members = team['team_member_id'] ?? [];
+            final isAssigned = team['assigned'] == true;
 
             return Obx(() {
               final isExpanded = expandedIndex.value == index;
@@ -52,22 +53,30 @@ class TeamListScreen extends StatelessWidget {
                   children: [
                     ListTile(
                       title: Text(
-                        team['team_name']?.toString() ??
-                            team['title']?.toString() ??
+                        team['name']?.toString() ??
+                            team['team_name']?.toString() ??
                             'Unnamed Team',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      trailing: Icon(isExpanded
-                          ? Icons.expand_less
-                          : Icons.expand_more),
+                      subtitle: Text(
+                        isAssigned ? '✅ Assigned' : '❌ Not Assigned',
+                        style: TextStyle(
+                          color: isAssigned ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      trailing: Icon(
+                        isExpanded ? Icons.expand_less : Icons.expand_more,
+                      ),
                       onTap: () {
                         expandedIndex.value = isExpanded ? -1 : index;
                       },
                     ),
+
+                    // MEMBERS LIST
                     if (isExpanded && members is List && members.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.only(
-                            left: 16, right: 16, bottom: 16),
+                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -96,6 +105,8 @@ class TeamListScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+
+                    // No members
                     if (isExpanded && (members == null || members.isEmpty))
                       const Padding(
                         padding: EdgeInsets.only(bottom: 16),

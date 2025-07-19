@@ -1,13 +1,31 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'project_controller.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:syncraft/admin/projects/project_controller.dart';
+import 'package:syncraft/admin/projects/project_model.dart';
 
-class AddProjectScreen extends StatelessWidget {
+class AddProjectScreen extends StatefulWidget {
+  const AddProjectScreen({super.key});
+
+  @override
+  State<AddProjectScreen> createState() => _AddProjectScreenState();
+}
+
+class _AddProjectScreenState extends State<AddProjectScreen> {
   final ProjectController controller = Get.find<ProjectController>();
 
-  final TextEditingController titleController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController dateTimeController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    dateTimeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,18 +55,21 @@ class AddProjectScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+
                 TextField(
-                  controller: titleController,
+                  controller: nameController,
                   decoration: InputDecoration(
-                    labelText: 'Project Title',
-                    hintText: 'Enter project title',
+                    labelText: 'Project Name',
+                    hintText: 'Enter project name',
                     prefixIcon: const Icon(Icons.title),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
                 TextField(
                   controller: descriptionController,
                   maxLines: 4,
@@ -61,41 +82,46 @@ class AddProjectScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
                 TextField(
                   controller: dateTimeController,
                   decoration: InputDecoration(
-                    labelText: 'Date & Time',
-                    hintText: 'e.g., 2025-07-20 15:00',
+                    labelText: 'Due Date (optional)',
+                    hintText: 'e.g., 2025-07-20',
                     prefixIcon: const Icon(Icons.calendar_today),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 30),
+
                 ElevatedButton.icon(
                   onPressed: () async {
-                    if (titleController.text.isEmpty ||
-                        descriptionController.text.isEmpty ||
-                        dateTimeController.text.isEmpty) {
-                      Get.snackbar("Error", "Please fill all fields");
+                    if (nameController.text.isEmpty || descriptionController.text.isEmpty) {
+                      Get.snackbar("Error", "Please fill at least name and description");
                       return;
                     }
 
-                    final success = await controller.addProject({
-                      'title': titleController.text,
-                      'description': descriptionController.text,
-                      'datetime': dateTimeController.text,
-                    });
+                    final project = Project(
+                      id: '0',
+                      name: nameController.text,
+                      description: descriptionController.text,
+                      adminId: 1,
+                      dueDate: dateTimeController.text.isEmpty ? null : dateTimeController.text,
+                      createdOn: DateTime.now().toIso8601String(),
+                    );
+
+                    final success = await controller.addProject(project);
 
                     if (success) {
                       Get.snackbar("Success", "Project created successfully");
-                      Future.delayed(Duration(milliseconds: 300), () {
-                        Navigator.of(context).pop(); // fallback
-                      });
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      Get.back(); // Close screen
                     }
-
                   },
                   icon: const Icon(Icons.add),
                   label: const Text("Create Project"),

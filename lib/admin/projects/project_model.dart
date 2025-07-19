@@ -1,26 +1,43 @@
 class Project {
-  final String id;
-  final String title;
+  final String? id;
+  final String name;
   final String description;
-  final double progress;
-  final String teamId;
+  final int adminId;
+  final String? dueDate;
+  final String createdOn;
 
-  Project({required this.id, required this.title, required this.description, required this.progress, required this.teamId});
+  Project({
+    this.id,
+    required this.name,
+    required this.description,
+    required this.adminId,
+    this.dueDate,
+    required this.createdOn,
+  });
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      progress: double.tryParse(json['progress'].toString()) ?? 0.0,
-      teamId: json['teamId'],
+      id: json['id']?.toString(),
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      adminId: json['admin_id'] ?? 0,
+      dueDate: json['due_date'],
+      createdOn: json['created_on'] ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    "title": title,
-    "description": description,
-    "progress": progress,
-    "teamId": teamId,
-  };
+  Map<String, dynamic> toJson() {
+    final data = {
+      'name': name,
+      'description': description,
+      'admin_id': adminId,
+      'created_on': createdOn,
+    };
+
+    if (dueDate != null) {
+      data['due_date'] = dueDate as Object;
+    }
+
+    return data;
+  }
 }
