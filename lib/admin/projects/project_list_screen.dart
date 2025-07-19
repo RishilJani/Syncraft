@@ -70,6 +70,23 @@ class ProjectListScreen extends StatelessWidget {
                           "Date: ${project['datetime']}",
                           style: const TextStyle(fontSize: 13, color: Colors.grey),
                         ),
+                        const Spacer(),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            controller.setSelectedProject(project);
+                            Get.toNamed('/project-progress');
+                          },
+                          icon: const Icon(Icons.bar_chart, size: 18),
+                          label: const Text('Progress',style: TextStyle(color: Colors.white),),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            textStyle: const TextStyle(fontSize: 13),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],
