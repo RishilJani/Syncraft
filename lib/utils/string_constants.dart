@@ -1,3 +1,5 @@
+//region API_HANDLER
+const baseUrl = "https://syncraft-api-server.onrender.com";
 // ignore_for_file: constant_identifier_names
 // region Routes
 const String RT_LOGIN_REGISTRATION_PAGE = "/registration_login";

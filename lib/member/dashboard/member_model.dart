@@ -1,10 +1,11 @@
+import 'package:syncraft/utils/api_handler.dart';
 import 'package:syncraft/utils/import_export.dart';
 
 class MemberModal {
   int memberId;
   String? memberName;
   String? teamName;
-  MemberProject? currentProject; // A member might not have a current project
+  Rx<MemberProject>? currentProject; // A member might not have a current project
   RxList<MemberTask> assignedTasks = <MemberTask>[].obs;
   RxList<TeamMember> teamMembers = <TeamMember>[].obs;
 
@@ -14,6 +15,7 @@ class MemberModal {
   }
 
   Future<bool> getMemberDetails() async {
+    // getMemberDetails
     await Future.delayed(Duration(seconds: 1), (){
       memberName = "Harsh Parmar";
     });
@@ -21,13 +23,22 @@ class MemberModal {
   }
 
   Future<bool> getTeamProject() async {
-    await Future.delayed(Duration(seconds: 1), (){
-      assignedTasks = [
-        MemberTask(id: 1, title: "title", status: "to do"),
-        MemberTask(id: 2, title: "title", status: "completed"),
-        MemberTask(id: 3, title: "title", status: "completed"),
-      ].obs;
-      teamName = "Tech Wizards";
+    dynamic data = await APIHandler().getTeamName(memberId: memberId);
+    if(data is String && data == 'ERROR'){
+      print("Nothing to see");
+      return false;
+    }
+
+        teamName = data['name'];
+        data = await getTasks();
+        if(data is String && data == 'ERROR'){
+          print("Nothing to see");
+          return true;
+        }
+        if(data is List<Map<String,dynamic>>){
+          assignedTasks = data.map((e) => MemberTask.fromMap(e)).toList().obs;
+        }
+
       currentProject = MemberProject(
         id: 1,
         name: "SynCraft",
@@ -35,34 +46,21 @@ class MemberModal {
         dueDate: DateTime.now().add(Duration(hours: 4)),
         totalTasks: 10,
         completedTasks: 7,
-      );
-    });
+      ).obs;
 
     return true;
   }
 
-  Future<bool> getTasks() async {
-    await Future.delayed(Duration(seconds: 1), (){
-      assignedTasks = [
-        MemberTask(id: 1, title: "Task 1", status: "to do", priority: "low"),
-        MemberTask(id: 2, title: "Task 2", status: "in progress"),
-        MemberTask(id: 3, title: "Task 3", status: "completed"),
-      ].obs;
-    });
-
-    return true;
+  Future<dynamic> getTasks() async {
+    return await APIHandler().getTasks(memberId: memberId);
   }
 
   Future<bool> getTeamMembers() async {
-    await Future.delayed(Duration(seconds: 1), (){
-        teamMembers = [
-          TeamMember(id: 1, name: "Rishil Jani", role: "manager"),
-          TeamMember(id: 2, name: "Karan Lukka", role: "member"),
-          TeamMember(id: 3, name: "Harsh Parmar", role: "member"),
-          TeamMember(id: 4, name: "Vanita Kambariya", role: "member"),
-          TeamMember(id: 5, name: "Jenisa Vasani", role: "member"),
-        ].obs;
-    });
+    dynamic data = await APIHandler().getTeamMembers(memberId: memberId).timeout(Duration(seconds: 10), onTimeout: () {print("TIMED OUT");});
+    if(data is String && data == 'ERROR'){
+      return false;
+    }
+    teamMembers = (data as List).map((e)=>TeamMember.fromMap(e)).toList().obs;
 
     return true;
   }

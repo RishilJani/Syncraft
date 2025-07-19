@@ -5,18 +5,38 @@ class APIHandler {
   static final APIHandler _instance = APIHandler._internal();
   factory APIHandler() => _instance; // creates sprcial constructor for singleTon class
   APIHandler._internal();
-  Duration timeout = Duration(seconds: 5);
+  Duration timeout = Duration(seconds: 10);
 
-  Future<dynamic> getUsers({context}) async {
+  Future<dynamic> getMemberDetails({required int memberId,context}) async {
     // showProgressDialog(context);
     http.Response res = await http.get(Uri.parse(BASE_URL)).timeout(timeout);
     // dismissProgress();
     return convertJSONToData(res);
   }
-
-  Future<dynamic> addUser({context, map}) async {
+  Future<dynamic> getTeamName({required int memberId,context}) async {
     // showProgressDialog(context);
-    http.Response res = await http.post(Uri.parse(BASE_URL), body: map);
+    print("-----------");
+    http.Response res = await http.get(Uri.parse('$baseUrl/teams/by-member/$memberId'));
+    print("$res-----------");
+    // dismissProgress();
+    return convertJSONToData(res);
+  }
+  Future<dynamic> getTasks({required int memberId,context}) async {
+    // showProgressDialog(context);
+    http.Response res = await http.get(Uri.parse('$baseUrl/tasks/user/$memberId')).timeout(timeout);
+    // dismissProgress();
+    return convertJSONToData(res);
+  }
+  Future<dynamic> getTeamProject({required int memberId,context}) async {
+    // showProgressDialog(context);
+    http.Response res = await http.get(Uri.parse('$baseUrl/projects/by-member/$memberId')).timeout(timeout);
+    // dismissProgress();
+    return convertJSONToData(res);
+  }
+
+  Future<dynamic> getTeamMembers({required int memberId,context}) async {
+    // showProgressDialog(context);
+    http.Response res = await http.post(Uri.parse('$baseUrl/teams/by-member/$memberId'));
     // dismissProgress();
     return convertJSONToData(res);
   }
@@ -43,15 +63,14 @@ class APIHandler {
   // }
 
   dynamic convertJSONToData(http.Response res) {
+    print("response code :: ${res.statusCode}");
     print("response received :: ${jsonDecode(res.body)}");
     if (res.statusCode == 200) {
+      
       return jsonDecode(res.body);
-    } else if (res.statusCode == 404) {
-      return 'PAGE NOT FOUND PLEASE CHECK YOUR URL';
-    } else if (res.statusCode == 500) {
-      return 'SERVER UDI GAYELU 6';
-    } else {
-      return 'NO DATA FOUND';
+    }
+    else {
+      return 'ERROR';
     }
   }
 }

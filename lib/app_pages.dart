@@ -4,6 +4,7 @@ import 'package:syncraft/admin/projects/add_project_screen.dart';
 import 'package:syncraft/admin/projects/project_list_screen.dart';
 import 'package:syncraft/admin/teams/add_team_screen.dart';
 import 'package:syncraft/admin/teams/team_list_screen.dart';
+import 'package:syncraft/member/dashboard/dashboard_view.dart';
 
 
 
@@ -16,6 +17,6 @@ class AppPages {
     GetPage(name: '/add-project', page: () => AddProjectScreen()),
     GetPage(name: '/teams', page: () => TeamListScreen()),
     GetPage(name: '/add-team', page: () => AddTeamScreen()),
-
+    GetPage(name: '/member/dashboard', page: () => MemberDashboardView()),
   ];
 }
