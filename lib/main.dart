@@ -1,6 +1,11 @@
+import 'package:syncraft/admin/teams/team_controller.dart';
+import 'package:syncraft/app_pages.dart';
+import 'package:syncraft/admin/projects/project_controller.dart';
 import 'package:syncraft/utils/import_export.dart';
 
 void main() {
+  Get.put(ProjectController());
+  Get.put(TeamController());
   runApp(const MyApp());
 }
 
@@ -11,12 +16,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Project Management',
+      theme: ThemeData(primarySwatch: Colors.purple),
+      initialRoute: AppPages.initial,
+      getPages: AppPages.routes,
     );
   }
 }
