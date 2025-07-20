@@ -1,4 +1,7 @@
-import '../utils/import_export.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:syncraft/admin/admin_profile_card_Screen.dart';
+import 'package:syncraft/utils/import_export.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -74,7 +77,9 @@ class DashboardScreen extends StatelessWidget {
     required double progress,
   }) {
     return GestureDetector(
-      onTap: () => Get.toNamed(route),
+      onTap: () {
+        Get.toNamed(route);
+      },
       child: Container(
         width: 280,
         padding: const EdgeInsets.all(20),
@@ -115,7 +120,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Drawer
+  // Drawers
   Drawer _buildDrawer() {
     return Drawer(
       backgroundColor: Colors.white,
@@ -130,7 +135,7 @@ class DashboardScreen extends StatelessWidget {
                 SizedBox(height: 12),
                 Text("Admin",
                     style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Text("admin@example.com",
                     style: TextStyle(color: Colors.grey, fontSize: 14)),
               ],
@@ -139,31 +144,29 @@ class DashboardScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dashboard, color: deepTeal),
             title: const Text("Dashboard"),
-            onTap: () => Get.toNamed(RT_ADMIN_DASHBOARD),
+            onTap: () => Get.toNamed('/dashboard'),
           ),
           ListTile(
             leading: const Icon(Icons.list, color: deepTeal),
             title: const Text("Projects"),
-            onTap: () => Get.toNamed(RT_ADMIN_PROJECTS),
+            onTap: () => Get.toNamed('/projects'),
           ),
           ListTile(
             leading: const Icon(Icons.people, color: deepTeal),
             title: const Text("Teams"),
-            onTap: () => Get.toNamed(RT_ADMIN_TEAMS),
+            onTap: () => Get.toNamed('/teams'),
           ),
           ListTile(
             leading: const Icon(Icons.person, color: deepTeal),
             title: const Text("Profile"),
             onTap: () {
-              Get.to(() => const AdminProfileCardScreen(
-                  adminData: {
-                "`name": "Vanita",
-                "description": "Admin of Syncraft",
-                "admin_id": "ADM001",
-                "due_date": "2025-08-01T00:00:00.000Z",
-                "created_on": "2025-07-01T00:00:00.000Z"
-              }
-              ));
+              Get.to(() => AdminProfileCardScreen(adminData: {
+                    "name": "Vanita",
+                    "description": "Admin of Syncraft",
+                    "admin_id": "ADM001",
+                    "due_date": "2025-08-01T00:00:00.000Z",
+                    "created_on": "2025-07-01T00:00:00.000Z"
+                  }));
             },
           ),
           ListTile(
@@ -186,6 +189,9 @@ class DashboardScreen extends StatelessWidget {
         title: const Text("Admin Dashboard"),
         centerTitle: true,
         backgroundColor: deepTeal,
+        actions: [
+          IconButton( onPressed: () => showLogoutDialog(context), icon: const Icon(Icons.logout,color: Colors.red,))
+        ],
       ),
       backgroundColor: yellowishWhite,
       body: SingleChildScrollView(
@@ -201,42 +207,43 @@ class DashboardScreen extends StatelessWidget {
             const SizedBox(height: 16),
             isMobile
                 ? Column(
-              children: [
-                _buildCard(
-                    title: "Projects",
-                    subtitle: "All project tasks and progress",
-                    route: '/projects',
-                    color: deepTeal,
-                    progress: 0.7),
-                _buildCard(
-                    title: "Teams",
-                    subtitle: "Your team assignments",
-                    route: '/teams',
-                    color: deepTeal,
-                    progress: 0.6),
-              ],
-            )
+                    children: [
+                      _buildCard(
+                          title: "Projects",
+                          subtitle: "All project tasks and progress",
+                          route: RT_ADMIN_PROJECTS,
+                          color: deepTeal,
+                          progress: 0.7),
+                      _buildCard(
+                          title: "Teams",
+                          subtitle: "Your team assignments",
+                          route: RT_ADMIN_TEAMS,
+                          color: deepTeal,
+                          progress: 0.6),
+
+                    ],
+                  )
                 : Row(
-              children: [
-                Expanded(
-                  child: _buildCard(
-                      title: "Projects",
-                      subtitle: "All project tasks and progress",
-                      route: '/projects',
-                      color: deepTeal,
-                      progress: 0.7),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildCard(
-                      title: "Teams",
-                      subtitle: "Your team assignments",
-                      route: '/teams',
-                      color: deepTeal,
-                      progress: 0.6),
-                ),
-              ],
-            ),
+                    children: [
+                      Expanded(
+                        child: _buildCard(
+                            title: "Projects",
+                            subtitle: "All project tasks and progress",
+                            route: '/projects',
+                            color: deepTeal,
+                            progress: 0.7),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildCard(
+                            title: "Teams",
+                            subtitle: "Your team assignments",
+                            route: '/teams',
+                            color: deepTeal,
+                            progress: 0.6),
+                      ),
+                    ],
+                  ),
             _buildWeeklyProgress(),
           ],
         ),

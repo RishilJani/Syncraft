@@ -1,32 +1,29 @@
-// ignore_for_file: must_be_immutable
-import 'package:syncraft/app_pages.dart';
+import 'package:syncraft/member/dashboard/dashboard_controller.dart';
 import 'package:syncraft/utils/import_export.dart';
+// --- Data Models (Replace with your actual models) ---
 
 class MemberDashboardView extends StatelessWidget {
-   int memberId = 0;
-   String? memberName;
+  final int memberId;
+  final String? memberName;
 
   late DashboardController dashboardController;
 
-  MemberDashboardView({super.key,}){
-    var mp = Get.arguments;
-    if(mp['id'] == null){
-      Get.offAndToNamed(AppPages.initial);
-      return;
-    }
-    dashboardController = DashboardController(memberId: mp['id']);
+  MemberDashboardView({
+    super.key,
+    required this.memberId,
+    required this.memberName,
+  }){
+    dashboardController = DashboardController(memberId: memberId);
     Get.put(dashboardController);
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA), // Light, clean background
+      backgroundColor: Color(0xFFF5F7FA), // Light, clean background
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1.0, // Subtle shadow
@@ -39,12 +36,7 @@ class MemberDashboardView extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.notifications_none, color: Colors.blueGrey[700]),
-            onPressed: () {
-              // TODO: Handle notifications
-            },
-          ),
+          IconButton( onPressed: () => showLogoutDialog(context), icon: const Icon(Icons.logout),)
         ],
       ),
       body: ListView( // Using ListView for overall scrollability
@@ -55,7 +47,7 @@ class MemberDashboardView extends StatelessWidget {
           const SizedBox(height: 20),
           ...[
             _buildSectionTitle(context, 'Current Project'),
-            _CurrentProjectCard(),
+            _CurrentProjectCard(project: dashboardController.currentProject),
             const SizedBox(height: 24),
 
             // Project Task Overview
@@ -83,14 +75,13 @@ class MemberDashboardView extends StatelessWidget {
   Widget _buildTeamHeader(BuildContext context) {
     return FutureBuilder(
         future: Future(() async {
-      if(dashboardController.teamName != null) {
-        return true;
-      }
-      return await dashboardController.getTeamProject();
-    }), builder: (ctx, snapshot){
+          if(dashboardController.teamName != null)
+            return true;
+          return await dashboardController.getTeamProject();
+        }), builder: (ctx, snapshot){
 
       if(snapshot.hasData && snapshot.data==true ){
-        // print("TEAM ${dashboardController.teamName}");
+        print("TEAM ${dashboardController.teamName}");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -107,7 +98,7 @@ class MemberDashboardView extends StatelessWidget {
               "${dashboardController.teamName}",
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF1A1A2E), // Dark, professional color
+                color: Color(0xFF1A1A2E), // Dark, professional color
               ),
             ),
           ],
@@ -142,12 +133,12 @@ class MemberDashboardView extends StatelessWidget {
       return await dashboardController.getTeamProject();
     }), builder: (ctx,snapshot){
       if(snapshot.hasData && dashboardController.currentProject!=null){
-        // int totalTasks = dashboardController.currentProject?.value.totalTasks??0;
-        // int completedTasks = dashboardController.currentProject?.value.completedTasks??0;
+        int totalTasks = dashboardController.currentProject?.totalTasks??0;
+        int completedTasks = dashboardController.currentProject?.completedTasks??0;
         final textTheme = Theme.of(context).textTheme;
         double progress = 0;
-        if (dashboardController.currentProject!.value.totalTasks > 0) {
-          progress = dashboardController.currentProject.value.completedTasks / dashboardController.currentProject.value.totalTasks;
+        if (dashboardController.currentProject!.totalTasks > 0) {
+          progress = dashboardController.currentProject.completedTasks / dashboardController.currentProject.totalTasks;
         }
 
         return Card(
@@ -171,7 +162,7 @@ class MemberDashboardView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "${dashboardController.currentProject.value.completedTasks} / ${dashboardController.currentProject.value.totalTasks} tasks completed",
+                      "${dashboardController.currentProject.completedTasks} / ${dashboardController.currentProject.totalTasks} tasks completed",
                       style: textTheme.bodyMedium?.copyWith(color: Colors.blueGrey.shade700),
                     ),
                     Text(
@@ -208,12 +199,11 @@ class MemberDashboardView extends StatelessWidget {
 
   Widget _buildAssignedTasksList(BuildContext context) {
     return FutureBuilder(future: Future(() async {
-        return await dashboardController.getTasks();
+      return await dashboardController.getTasks();
     }), builder: (ctx,snapshot){
-      if(snapshot.hasData && snapshot.data is List && snapshot.data!.isNotEmpty){
-        dashboardController.assignedTasks = (snapshot.data as List).map((e) => MemberTask.fromMap(e)).toList().obs;
+      if(snapshot.hasData && snapshot.data==true){
         RxList<MemberTask> tasks = dashboardController.assignedTasks;
-        return Obx(()=>ListView.builder(
+        return ListView.builder(
           shrinkWrap: true, // Important within another scrollable
           physics: const NeverScrollableScrollPhysics(), // Delegate scrolling to parent
           itemCount: tasks.length,
@@ -221,7 +211,7 @@ class MemberDashboardView extends StatelessWidget {
             final task = tasks[index];
             return _TaskListItem(task: task);
           },
-        ));
+        );
       }
       if(!snapshot.hasData){
         return Container(
@@ -263,19 +253,15 @@ class MemberDashboardView extends StatelessWidget {
 }
 
 class _CurrentProjectCard extends StatelessWidget {
-  DashboardController dashboardController = Get.find<DashboardController>();
-  Rx<MemberProject>? project;
+  final MemberProject? project;
 
-  _CurrentProjectCard(){
-    Get.put(dashboardController);
-    project = dashboardController.currentProject;
-  }
+  const _CurrentProjectCard({required this.project});
 
   @override
   Widget build(BuildContext context) {
     if(project == null) return Container();
     final textTheme = Theme.of(context).textTheme;
-    return Obx(()=>Card(
+    return Card(
       elevation: 2.0,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -283,7 +269,8 @@ class _CurrentProjectCard extends StatelessWidget {
       color: Colors.white54, // Subtle primary color hint
       child: InkWell(
         onTap: () {
-          // print('Tapped on project: ${project!.value.name}');
+          // TODO: Navigate to project details screen
+          print('Tapped on project: ${project!.name}');
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -292,7 +279,7 @@ class _CurrentProjectCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                project!.value.name,
+                project!.name,
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColorDark,
@@ -302,19 +289,19 @@ class _CurrentProjectCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                project!.value.description,
+                project!.description,
                 style: textTheme.bodyMedium?.copyWith(color: Colors.blueGrey[800]),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              if (project!.value.dueDate != null) ...[
+              if (project!.dueDate != null) ...[
                 const SizedBox(height: 10),
                 Row(
                   children: [
                     Icon(Icons.calendar_today_outlined, size: 16, color: Colors.blueGrey[600]),
                     const SizedBox(width: 6),
                     Text(
-                      'Due: ${project!.value.dueDate!.toLocal().toString().split(' ')[0]}', // Simple date format
+                      'Due: ${project!.dueDate!.toLocal().toString().split(' ')[0]}', // Simple date format
                       style: textTheme.bodySmall?.copyWith(color: Colors.blueGrey[700]),
                     ),
                   ],
@@ -324,7 +311,7 @@ class _CurrentProjectCard extends StatelessWidget {
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -372,7 +359,7 @@ class _TaskListItem extends StatelessWidget {
             decorationColor: Colors.grey.shade600,
           ),
         ),
-        subtitle: task.priority != null || task.due_date != null
+        subtitle: task.priority != null || task.taskDueDate != null
             ? Padding(
           padding: const EdgeInsets.only(top: 4.0),
           child: Row(
@@ -393,16 +380,16 @@ class _TaskListItem extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (task.priority != null && task.due_date != null)
+              if (task.priority != null && task.taskDueDate != null)
                 const SizedBox(width: 8),
-              if (task.due_date != null)
+              if (task.taskDueDate != null)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.event_available_outlined, size: 14, color: Colors.blueGrey[400]),
                     const SizedBox(width: 4),
                     Text(
-                      task.due_date!.toLocal().toString().split(' ')[0],
+                      task.taskDueDate!.toLocal().toString().split(' ')[0],
                       style: textTheme.bodySmall?.copyWith(color: Colors.blueGrey[600]),
                     ),
                   ],
@@ -412,7 +399,8 @@ class _TaskListItem extends StatelessWidget {
         )
             : null,
         onTap: () {
-          // print('Tapped on task: ${task.title}');
+          // TODO: Navigate to task details or allow quick actions (e.g., mark as complete)
+          print('Tapped on task: ${task.title}');
         },
         trailing: Icon(Icons.chevron_right, color: Colors.blueGrey[300]),
       ),
@@ -436,7 +424,7 @@ class _TaskListItem extends StatelessWidget {
 
 class _TeamMembersExpansionTile extends StatelessWidget {
   DashboardController dashboardController;
-   _TeamMembersExpansionTile(this.dashboardController);
+  _TeamMembersExpansionTile(this.dashboardController);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncraft/project_progress/project_progress_screen.dart';
+import 'package:syncraft/utils/import_export.dart';
 import 'project_controller.dart';
 import 'project_model.dart';
 
@@ -11,6 +12,10 @@ class ProjectListScreen extends StatelessWidget {
   static const Color deepTeal = Color(0xFF015054);
   static const Color yellowishWhite = Color(0xFFEBF1CF);
 
+   ProjectListScreen({super.key}){
+     print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,9 +24,8 @@ class ProjectListScreen extends StatelessWidget {
         title: const Text('All Projects'),
         backgroundColor: deepTeal,
         actions: [
-          IconButton(
-            onPressed: () => Get.toNamed('/add-project'),
-            icon: const Icon(Icons.add, color: yellowishWhite),
+          IconButton( onPressed: () => Get.toNamed('/add-project'),  icon: const Icon(Icons.add, color: yellowishWhite), ),
+          IconButton( onPressed: () => showLogoutDialog(context), icon: const Icon(Icons.logout, color: yellowishWhite),
           )
         ],
       ),
