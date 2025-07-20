@@ -1,19 +1,25 @@
 class ManagerTask {
-  final String id;
+  String id;
   String title;
   String description;
-  String status; // 'pending', 'in progress', 'in review', 'completed'
   String assignedTo;
-  List<Map<String, String>> comments; // Each map: {'text': '...', 'time': '...'}
+  String status;
+  String priority;
+  DateTime deadline;
+  List<Map<String, String>> comments;
+  List<String> attachments;
 
   ManagerTask({
     required this.id,
     required this.title,
     required this.description,
-    this.status = 'pending',
-    this.assignedTo = '',
-    List<Map<String, String>>? comments,
-  }) : comments = comments ?? [];
+    required this.assignedTo,
+    required this.status,
+    required this.priority,
+    required this.deadline,
+    required this.comments,
+    this.attachments = const [],
+  });
 
   ManagerTask copyWith({
     String? id,
@@ -21,7 +27,10 @@ class ManagerTask {
     String? description,
     String? assignedTo,
     String? status,
+    String? priority,
+    DateTime? deadline,
     List<Map<String, String>>? comments,
+    List<String>? attachments,
   }) {
     return ManagerTask(
       id: id ?? this.id,
@@ -29,7 +38,10 @@ class ManagerTask {
       description: description ?? this.description,
       assignedTo: assignedTo ?? this.assignedTo,
       status: status ?? this.status,
+      priority: priority ?? this.priority,
+      deadline: deadline ?? this.deadline,
       comments: comments ?? this.comments,
+      attachments: attachments ?? this.attachments,
     );
   }
 }
