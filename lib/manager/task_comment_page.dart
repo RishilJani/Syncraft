@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:syncraft/utils/import_export.dart';
 
 class TaskCommentsPage extends StatefulWidget {
@@ -5,7 +6,8 @@ class TaskCommentsPage extends StatefulWidget {
   final ManagerModel project;
   final ManagerController controller;
 
-  TaskCommentsPage({
+  const TaskCommentsPage({
+    super.key,
     required this.task,
     required this.project,
     required this.controller,
@@ -52,54 +54,54 @@ class _TaskCommentsPageState extends State<TaskCommentsPage> {
               children: [
                 Expanded(
                   child: widget.task.comments.isEmpty
-                      ? Center(
-                    child: Text(
-                      "No comments yet",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                      : ListView.builder(
-                    itemCount: widget.task.comments.length,
-                    itemBuilder: (_, index) {
-                      final commentMap = widget.task.comments[index];
-                      final comment = commentMap['text'] ?? '';
-                      final timestamp = commentMap['timestamp'] ?? '';
-                      final user = commentMap['user'] ?? 'Unknown';
-                      final initial =
-                      user.isNotEmpty ? user[0].toUpperCase() : '?';
-
-                      return ListTile(
-                        tileColor: Colors.white.withOpacity(0.8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue,
+                      ? const Center(
                           child: Text(
-                            initial,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            "No comments yet",
+                            style: TextStyle(color: Colors.white),
                           ),
+                        )
+                      : ListView.builder(
+                          itemCount: widget.task.comments.length,
+                          itemBuilder: (_, index) {
+                            final commentMap = widget.task.comments[index];
+                            final comment = commentMap['text'] ?? '';
+                            final timestamp = commentMap['timestamp'] ?? '';
+                            final user = commentMap['user'] ?? 'Unknown';
+                            final initial =
+                                user.isNotEmpty ? user[0].toUpperCase() : '?';
+
+                            return ListTile(
+                              tileColor: Colors.white.withOpacity(0.8),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.blue,
+                                child: Text(
+                                  initial,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                comment,
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                              subtitle: Text(
+                                "By $user on ${formatDateTime(timestamp)}",
+                                style: const TextStyle(
+                                    color: Colors.black87, fontSize: 12),
+                              ),
+                            );
+                          },
                         ),
-                        title: Text(
-                          comment,
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        subtitle: Text(
-                          "By $user on ${formatDateTime(timestamp)}",
-                          style: TextStyle(
-                              color: Colors.black87, fontSize: 12),
-                        ),
-                      );
-                    },
-                  ),
                 ),
                 const SizedBox(height: 12),
                 Container(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(16),
@@ -110,14 +112,14 @@ class _TaskCommentsPageState extends State<TaskCommentsPage> {
                       Expanded(
                         child: TextField(
                           controller: commentController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Add a comment',
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.send, color: Colors.blueAccent),
+                        icon: const Icon(Icons.send, color: Colors.blueAccent),
                         onPressed: () {
                           if (commentController.text.trim().isNotEmpty) {
                             final newComment = {

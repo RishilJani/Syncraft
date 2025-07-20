@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:syncraft/admin/admin_profile_card_Screen.dart';
+import '../utils/import_export.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -141,25 +139,25 @@ class DashboardScreen extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.dashboard, color: deepTeal),
             title: const Text("Dashboard"),
-            onTap: () => Get.toNamed('/dashboard'),
+            onTap: () => Get.toNamed(RT_ADMIN_DASHBOARD),
           ),
           ListTile(
             leading: const Icon(Icons.list, color: deepTeal),
             title: const Text("Projects"),
-            onTap: () => Get.toNamed('/projects'),
+            onTap: () => Get.toNamed(RT_ADMIN_PROJECTS),
           ),
           ListTile(
             leading: const Icon(Icons.people, color: deepTeal),
             title: const Text("Teams"),
-            onTap: () => Get.toNamed('/teams'),
+            onTap: () => Get.toNamed(RT_ADMIN_TEAMS),
           ),
           ListTile(
             leading: const Icon(Icons.person, color: deepTeal),
             title: const Text("Profile"),
             onTap: () {
-              Get.to(() => AdminProfileCardScreen(
+              Get.to(() => const AdminProfileCardScreen(
                   adminData: {
-                "name": "Vanita",
+                "`name": "Vanita",
                 "description": "Admin of Syncraft",
                 "admin_id": "ADM001",
                 "due_date": "2025-08-01T00:00:00.000Z",

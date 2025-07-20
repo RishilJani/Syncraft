@@ -103,8 +103,6 @@ class APIHandler {
   }
 
   dynamic convertJSONToData(http.Response res) {
-    print("response code :: ${res.statusCode}");
-    print("response received :: ${jsonDecode(res.body)}");
     if (res.statusCode == 200) {
       return jsonDecode(res.body);
     }
