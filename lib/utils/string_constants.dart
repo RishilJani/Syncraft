@@ -22,6 +22,7 @@ const String USER_NAME = 'username';
 const String USER_EMAIL = 'email';
 const String USER_PASSWORD = 'password';
 const String USER_ROLE = 'role';
+const String ADMIN_ID = 'admin_id';
 // endregion
 
 // region Button

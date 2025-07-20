@@ -11,12 +11,13 @@ class RegistrationController {
   bool rememberMe = false;
 
   String? adminID = '';
-  RegistrationController({this.username, this.email, this.password, this.adminID});
+  RegistrationController({this.username, this.email,this.selectedRole, this.password, this.adminID});
 
   Map<String,dynamic> toMap(){
     return {
       USER_NAME : username,
       USER_EMAIL : email,
+      USER_ROLE : selectedRole,
       USER_PASSWORD : password,
       ADMIN_ID : adminID
     };

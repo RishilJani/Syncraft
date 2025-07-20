@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:syncraft/utils/import_export.dart';
 
 // enum UserRole { admin, projectManager, teamMember }
@@ -18,7 +16,7 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   @override
   void initState() {
     super.initState();
-    Get.put(registrationController);
+    registrationController.selectedRole = UserRole.values[0];
   }
 
   String heading = 'Welcome Back!';
@@ -41,8 +39,11 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
         mapID = await apiHandler.getLoginData(mp);
       }
       else {
-        mp[USER_NAME] = registrationController.username;
-        mapID = await apiHandler.getSignUpData(mp);
+        if(registrationController.selectedRole == UserRole.admin){
+          Get.toNamed(RT_ADMIN_DASHBOARD);
+        }else{
+          Get.toNamed(RT_SIGNUP, arguments: mp);
+        }
       }
       if (mapID["id"] != null) {
         if (registrationController.selectedRole == UserRole.admin) {
@@ -201,28 +202,21 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                       return Expanded(
                         child: InkWell(
                           // Makes the whole area tappable
-                          onTap: () {
-                            setState(() {
-                              registrationController.selectedRole = role;
-                            });
-                          },
+                          onTap: () { setState(() { registrationController.selectedRole = role; });},
                           borderRadius: BorderRadius.circular(
                               8.0), // Optional: for tap feedback
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 4.0, vertical: 8.0),
                             child: Row(
-                              mainAxisSize: MainAxisSize
-                                  .min, // So the Row doesn't expand unnecessarily
+                              mainAxisSize: MainAxisSize.min, // So the Row doesn't expand unnecessarily
                               children: <Widget>[
                                 Radio<UserRole>(
                                   value: role,
-                                  groupValue:
-                                      registrationController.selectedRole,
+                                  groupValue: registrationController.selectedRole,
                                   onChanged: (UserRole? value) {
                                     setState(() {
-                                      registrationController.selectedRole =
-                                          value;
+                                      registrationController.selectedRole = value;
                                     });
                                   },
                                   activeColor: theme.primaryColor,
