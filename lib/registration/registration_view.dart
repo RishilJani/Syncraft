@@ -1,4 +1,5 @@
 import 'package:syncraft/utils/import_export.dart';
+
 // enum UserRole { admin, projectManager, teamMember }
 
 class LoginRegisterPage extends StatefulWidget {
@@ -15,39 +16,55 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   @override
   void initState() {
     super.initState();
-    Get.put(registrationController);
+    registrationController.selectedRole = UserRole.values[0];
   }
-  // bool isLogin = true;
-  // String _email = '';
-  // String _password = '';
-  // UserRole? _selectedRole = UserRole.admin;
-  // bool _rememberMe = false;
 
-  // String heading = 'Welcome Back!';
-  // bool isVisible = true;
-
-  // Define consistent spacing
   String heading = 'Welcome Back!';
   bool isVisible = true;
 
   final double _formFieldSpacing = 20.0;
   final double _sectionSpacing = 30.0;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // --- Your Authentication Logic Here ---
+      Map<String, dynamic> mp = {
+        USER_EMAIL: registrationController.email,
+        USER_PASSWORD: registrationController.password,
+        USER_ROLE: _getRoleString(registrationController.selectedRole!)
+      };
+      APIHandler apiHandler = APIHandler();
+      Map<String, dynamic> mapID = {};
+      Get.dialog(const LoadingScreen(), barrierDismissible: false);
 
+      if (registrationController.isLogin) {
+        mapID = await apiHandler.getLoginData(mp);
+      }
+      else {
+          if (Get.isDialogOpen ?? false) Get.back();
+          Get.toNamed(RT_SIGNUP, arguments: mp);
+      }
+      if (Get.isDialogOpen ?? false) Get.back();
 
-      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-          content: Text('Login attempt for ${registrationController.email}...'),
-          duration: const Duration(seconds: 2),
-        backgroundColor: Colors.greenAccent,
-        ),);
-
-      Get.toNamed(RT_TEMP_PAGE);
-
-    } else {
+      if (mapID["id"] != null) {
+        if (registrationController.selectedRole == UserRole.admin) {
+          Get.offAllNamed(RT_ADMIN_DASHBOARD,arguments: mapID);
+        } else if (registrationController.selectedRole == UserRole.projectManager) {
+          Get.offAllNamed(RT_MANAGER_DASHBOARD, arguments: mapID);
+        }
+        else {
+          Get.offAllNamed(RT_MEMBER_DASHBOARD, arguments: mapID);
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                Text('Login attempt for ${registrationController.email}...'),
+            duration: const Duration(seconds: 2),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      }
+    }
+    else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please correct the errors in the form.'),
@@ -64,10 +81,11 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      body: SafeArea( // Ensures content is not obscured by system UI (notches, etc.)
-        child: Center( // Center the form vertically
+      body: SafeArea(
+        child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -102,7 +120,8 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Email Address',
                       hintText: 'you@example.com',
-                      prefixIcon: Icon(Icons.alternate_email, color: theme.primaryColor),
+                      prefixIcon: Icon(Icons.alternate_email,
+                          color: theme.primaryColor),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
@@ -115,12 +134,14 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                       if (value == null || value.isEmpty) {
                         return 'Email address is required.';
                       }
-                      if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+                      if (!RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(value)) {
                         return 'Please enter a valid email address.';
                       }
                       return null;
                     },
-                    onSaved: (value) => registrationController.email = value!,
+                    onChanged: (value) => registrationController.email = value,
                     textInputAction: TextInputAction.next,
                   ),
                   SizedBox(height: _formFieldSpacing),
@@ -130,12 +151,17 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                     decoration: InputDecoration(
                       labelText: 'Password',
                       hintText: 'Enter your password',
-                      prefixIcon: Icon(Icons.lock_outline, color: theme.primaryColor),
-                      suffixIcon: IconButton(onPressed: () {
-                        setState(() {
-                          isVisible = !isVisible;
-                        });
-                      }, icon: Icon( isVisible ?  Icons.visibility : Icons.visibility_off)),
+                      prefixIcon:
+                          Icon(Icons.lock_outline, color: theme.primaryColor),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isVisible = !isVisible;
+                            });
+                          },
+                          icon: Icon(isVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off)),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
@@ -148,37 +174,41 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                       if (value == null || value.isEmpty) {
                         return 'Password is required.';
                       }
-                      if (value.length < 8) {
-                        return 'Password must be at least 8 characters long.';
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long.';
                       }
                       return null;
                     },
-                    onSaved: (value) => registrationController.password = value!,
-                    textInputAction: TextInputAction.done, // For better keyboard navigation
-                    onFieldSubmitted: (_) => _submitForm(), // Submit on keyboard done
+                    onChanged: (value) =>
+                        registrationController.password = value,
+                    textInputAction:
+                        TextInputAction.done, // For better keyboard navigation
+                    onFieldSubmitted: (_) =>
+                        _submitForm(), // Submit on keyboard done
                   ),
                   SizedBox(height: _sectionSpacing),
 
                   // User Role Radio Buttons in a Single Row
                   Text(
                     'Select Your Role:',
-                    style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                    style: textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: _formFieldSpacing / 2),
 
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distributes space evenly
+                    mainAxisAlignment: MainAxisAlignment
+                        .spaceBetween, // Distributes space evenly
                     children: UserRole.values.map((role) {
-                      return Expanded( // Allows each radio button option to take available space
-                        child: InkWell( // Makes the whole area tappable
-                          onTap: () {
-                            setState(() {
-                              registrationController.selectedRole = role;
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(8.0), // Optional: for tap feedback
+                      return Expanded(
+                        child: InkWell(
+                          // Makes the whole area tappable
+                          onTap: () { setState(() { registrationController.selectedRole = role; });},
+                          borderRadius: BorderRadius.circular(
+                              8.0), // Optional: for tap feedback
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0, vertical: 8.0),
                             child: Row(
                               mainAxisSize: MainAxisSize.min, // So the Row doesn't expand unnecessarily
                               children: <Widget>[
@@ -191,14 +221,19 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                                     });
                                   },
                                   activeColor: theme.primaryColor,
-                                  visualDensity: VisualDensity.compact, // Makes radio button smaller
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // Reduces tap area slightly
+                                  visualDensity: VisualDensity
+                                      .compact, // Makes radio button smaller
+                                  materialTapTargetSize: MaterialTapTargetSize
+                                      .shrinkWrap, // Reduces tap area slightly
                                 ),
-                                Flexible( // Allows text to wrap if needed, though unlikely for short role names
+                                Flexible(
+                                  // Allows text to wrap if needed, though unlikely for short role names
                                   child: Text(
                                     _getRoleString(role),
-                                    style: textTheme.bodyMedium, // Adjusted for potentially smaller space
-                                    overflow: TextOverflow.ellipsis, // Handle overflow if text is too long
+                                    style: textTheme
+                                        .bodyMedium, // Adjusted for potentially smaller space
+                                    overflow: TextOverflow
+                                        .ellipsis, // Handle overflow if text is too long
                                   ),
                                 ),
                               ],
@@ -217,18 +252,22 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                       Checkbox(
                         value: registrationController.rememberMe,
                         onChanged: (bool? value) {
-                          setState(() => registrationController.rememberMe = value!);
+                          setState(
+                              () => registrationController.rememberMe = value!);
                         },
                         activeColor: theme.primaryColor,
                         visualDensity: VisualDensity.compact, // More compact
                       ),
-                      GestureDetector( // Makes the text clickable too
+                      GestureDetector(
+                        // Makes the text clickable too
                         onTap: () {
-                          setState(() => registrationController.rememberMe = !registrationController.rememberMe);
+                          setState(() => registrationController.rememberMe =
+                              !registrationController.rememberMe);
                         },
                         child: Text(
                           'Remember me',
-                          style: textTheme.bodyLarge?.copyWith(color: Colors.grey[800]),
+                          style: textTheme.bodyLarge
+                              ?.copyWith(color: Colors.grey[800]),
                         ),
                       ),
                       const Spacer(), // Pushes "Forgot Password" to the right
@@ -246,7 +285,6 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                         ),
                       ),
                       */
-
                     ],
                   ),
                   SizedBox(height: _sectionSpacing * 1.5),
@@ -255,9 +293,13 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                   ElevatedButton(
                     onPressed: _submitForm,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.primaryColor, // Background color of the button
-                      foregroundColor: theme.colorScheme.onPrimary, // <<< THIS IS THE TEXT COLOR
-                      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0), // Added horizontal padding
+                      backgroundColor:
+                          theme.primaryColor, // Background color of the button
+                      foregroundColor: theme
+                          .colorScheme.onPrimary, // <<< THIS IS THE TEXT COLOR
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0,
+                          horizontal: 32.0), // Added horizontal padding
                       textStyle: textTheme.titleMedium?.copyWith(
                         // color: theme.colorScheme.onPrimary, // We set foregroundColor directly, so this can be removed or kept for font weight/size
                         fontWeight: FontWeight.bold,
@@ -267,29 +309,41 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       elevation: 5,
-                      minimumSize: const Size(double.infinity, 50), // Ensure button takes full width and has a good height
+                      minimumSize: const Size(double.infinity,
+                          50), // Ensure button takes full width and has a good height
                     ),
-                    child: Text(registrationController.isLogin ? 'Login ': 'Register'), // Or "Register"
+                    child: Text(registrationController.isLogin
+                        ? 'Login '
+                        : 'Register'), // Or "Register"
                   ),
                   SizedBox(height: _formFieldSpacing),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                       registrationController.isLogin ?  "Don't have an account?" : "Already have an account?",
+                        registrationController.isLogin
+                            ? "Don't have an account?"
+                            : "Already have an account?",
                         style: textTheme.bodyMedium,
                       ),
                       TextButton(
                         onPressed: () {
                           // Navigate to registration page or toggle form type
-                          print(!registrationController.isLogin ? 'Sign Up' : "Login");
+                          print(!registrationController.isLogin
+                              ? 'Sign Up'
+                              : "Login");
                           setState(() {
-                            registrationController.isLogin = !registrationController.isLogin;
-                            heading = registrationController.isLogin ? "Welcome Back!" : 'Welcome To Syncraft!';
+                            registrationController.isLogin =
+                                !registrationController.isLogin;
+                            heading = registrationController.isLogin
+                                ? "Welcome Back!"
+                                : 'Welcome To Syncraft!';
                           });
                         },
                         child: Text(
-                          registrationController.isLogin ? 'Sign Up' : 'Login', // Or "Sign In"
+                          registrationController.isLogin
+                              ? 'Sign Up'
+                              : 'Login', // Or "Sign In"
                           style: textTheme.bodyMedium?.copyWith(
                             color: theme.primaryColor,
                             fontWeight: FontWeight.bold,
@@ -310,11 +364,11 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
   String _getRoleString(UserRole role) {
     switch (role) {
       case UserRole.admin:
-        return 'Admin';
+        return 'admin';
       case UserRole.projectManager:
-        return 'Manager';
+        return 'manager';
       case UserRole.teamMember:
-        return 'Member';
+        return 'member';
     }
   }
 }

@@ -16,7 +16,7 @@ class MemberModal {
 
   Future<bool> getMemberDetails() async {
     // getMemberDetails
-    await Future.delayed(Duration(seconds: 1), (){
+    await Future.delayed(const Duration(seconds: 1), (){
       memberName = "Harsh Parmar";
     });
     return true;

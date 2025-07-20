@@ -1,6 +1,6 @@
-import 'package:syncraft/member/dashboard/dashboard_controller.dart';
+// ignore_for_file: must_be_immutable
+import 'package:syncraft/app_pages.dart';
 import 'package:syncraft/utils/import_export.dart';
-// --- Data Models (Replace with your actual models) ---
 
 class MemberDashboardView extends StatelessWidget {
    int memberId = 0;
@@ -8,30 +8,25 @@ class MemberDashboardView extends StatelessWidget {
 
   late DashboardController dashboardController;
 
-  MemberDashboardView({
-    super.key,
-  }){
-    dashboardController = DashboardController(memberId: Get.arguments['memberId']??0);
-    Get.put(dashboardController);
-    print("${Get.arguments['memberId']} ${Get.arguments['memberId']}");
-    if(Get.arguments['memberId'] == null){
-      Get.offAndToNamed("/login");
+  MemberDashboardView({super.key,}){
+    var mp = Get.arguments;
+    if(mp['id'] == null){
+      Get.offAndToNamed(AppPages.initial);
       return;
     }
+    dashboardController = DashboardController(memberId: mp['id']);
+    Get.put(dashboardController);
 
-    memberId = Get.arguments['memberId'];
-    memberName = Get.arguments['memberName'];
   }
 
   @override
   Widget build(BuildContext context) {
 
-
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF5F7FA), // Light, clean background
+      backgroundColor: const Color(0xFFF5F7FA), // Light, clean background
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1.0, // Subtle shadow
@@ -88,13 +83,14 @@ class MemberDashboardView extends StatelessWidget {
   Widget _buildTeamHeader(BuildContext context) {
     return FutureBuilder(
         future: Future(() async {
-      if(dashboardController.teamName != null)
+      if(dashboardController.teamName != null) {
         return true;
+      }
       return await dashboardController.getTeamProject();
     }), builder: (ctx, snapshot){
 
       if(snapshot.hasData && snapshot.data==true ){
-        print("TEAM ${dashboardController.teamName}");
+        // print("TEAM ${dashboardController.teamName}");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -111,7 +107,7 @@ class MemberDashboardView extends StatelessWidget {
               "${dashboardController.teamName}",
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A1A2E), // Dark, professional color
+                color: const Color(0xFF1A1A2E), // Dark, professional color
               ),
             ),
           ],
@@ -146,8 +142,8 @@ class MemberDashboardView extends StatelessWidget {
       return await dashboardController.getTeamProject();
     }), builder: (ctx,snapshot){
       if(snapshot.hasData && dashboardController.currentProject!=null){
-        int totalTasks = dashboardController.currentProject?.value.totalTasks??0;
-        int completedTasks = dashboardController.currentProject?.value.completedTasks??0;
+        // int totalTasks = dashboardController.currentProject?.value.totalTasks??0;
+        // int completedTasks = dashboardController.currentProject?.value.completedTasks??0;
         final textTheme = Theme.of(context).textTheme;
         double progress = 0;
         if (dashboardController.currentProject!.value.totalTasks > 0) {
@@ -287,8 +283,7 @@ class _CurrentProjectCard extends StatelessWidget {
       color: Colors.white54, // Subtle primary color hint
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to project details screen
-          print('Tapped on project: ${project!.value.name}');
+          // print('Tapped on project: ${project!.value.name}');
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -417,8 +412,7 @@ class _TaskListItem extends StatelessWidget {
         )
             : null,
         onTap: () {
-          // TODO: Navigate to task details or allow quick actions (e.g., mark as complete)
-          print('Tapped on task: ${task.title}');
+          // print('Tapped on task: ${task.title}');
         },
         trailing: Icon(Icons.chevron_right, color: Colors.blueGrey[300]),
       ),
