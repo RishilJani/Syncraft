@@ -1,25 +1,38 @@
-import 'package:get/get.dart';
-import 'package:syncraft/admin/dashboard_screen.dart';
-import 'package:syncraft/admin/projects/add_project_screen.dart';
-import 'package:syncraft/admin/projects/project_list_screen.dart';
-import 'package:syncraft/project_progress/project_progress_screen.dart';
-
-import 'package:syncraft/admin/teams/add_team_screen.dart';
-import 'package:syncraft/admin/teams/team_list_screen.dart';
-import 'package:syncraft/project_progress/project_progress_screen.dart';
-
-
+import 'package:syncraft/utils/import_export.dart';
 
 class AppPages {
-  static const initial = '/dashboard';
+  static const initial = RT_LOGIN_REGISTRATION_PAGE;
 
   static final routes = [
-    GetPage(name: '/dashboard', page: () => DashboardScreen()),
-    GetPage(name: '/projects', page: () => ProjectListScreen()),
-    GetPage(name: '/add-project', page: () => AddProjectScreen()),
-    GetPage(name: '/teams', page: () => TeamListScreen()),
-    GetPage(name: '/add-team', page: () => AddTeamScreen()),
-    GetPage(name: '/project-progress', page: () => ProjectProgressScreen(),)
+    GetPage(
+        name: RT_LOGIN_REGISTRATION_PAGE,
+        page: () => const LoginRegisterPage(),
+    ),
+    GetPage(
+        name: RT_SIGNUP, page: () => RegistrationPage()
+    ),
 
+    // admin
+    GetPage(
+      name: RT_ADMIN_DASHBOARD,
+      page: () => const DashboardScreen(),
+    ),
+    GetPage(name: RT_ADMIN_ADD_PROJECTS, page: () => AddProjectScreen()),
+    GetPage(name: RT_ADMIN_TEAMS, page: () => TeamListScreen()),
+    GetPage(name: RT_ADMIN_ADD_TEAM, page: () => AddTeamScreen()),
+
+    // manager
+    GetPage(
+        name: RT_MANAGER_DASHBOARD,
+        page: () => const ManagerView()
+    ),
+
+    // member
+    GetPage(
+        name: RT_MEMBER_DASHBOARD,
+        page: () => MemberDashboardView(),
+    ),
+
+    // GetPage(name: '/projects', page: () => ProjectListScreen()),
   ];
 }
