@@ -23,12 +23,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   Future<void> _submitRegistration() async {
     if (_formKey.currentState!.validate()) {
-      // _formKey.currentState!.save();
       APIHandler apiHandler = APIHandler();
       mp[USER_NAME] = registrationController.username;
       mp[ADMIN_ID] = registrationController.adminID;
+      Get.dialog(const LoadingScreen(), barrierDismissible: false);
 
       Map<String,dynamic> mapID = await apiHandler.getSignUpData(mp);
+      print("$mp");
+
+      if (Get.isDialogOpen ?? false) Get.back();
       if(mapID["id"] == null){
         Get.back();
       }
@@ -39,7 +42,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         else if (mp[USER_ROLE] == "manager") {
           Get.toNamed(RT_MANAGER_DASHBOARD, arguments: mapID);
         }
-        else {
+        else if(mp[USER_ROLE] == "member"){
           Get.toNamed(RT_MEMBER_DASHBOARD, arguments: mapID);
         }
       }

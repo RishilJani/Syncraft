@@ -10,10 +10,8 @@ export 'package:syncraft/registration/registration_model.dart';
 export 'package:syncraft/registration/registration_controller.dart';
 export 'package:syncraft/registration/registration_view.dart';
 export 'package:syncraft/registration/sign_up.dart';
-export 'package:syncraft/registration/login_middleware.dart';
 
-export 'package:syncraft/temp.dart';
-
+export 'package:syncraft/utils/circular_indicator_controller.dart';
 export 'package:syncraft/admin/dashboard_screen.dart';
 
 export 'package:syncraft/admin/projects/add_project_screen.dart';

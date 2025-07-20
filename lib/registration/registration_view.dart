@@ -34,24 +34,25 @@ class _LoginRegisterPageState extends State<LoginRegisterPage> {
       };
       APIHandler apiHandler = APIHandler();
       Map<String, dynamic> mapID = {};
+      Get.dialog(const LoadingScreen(), barrierDismissible: false);
 
       if (registrationController.isLogin) {
         mapID = await apiHandler.getLoginData(mp);
       }
       else {
-        if(registrationController.selectedRole == UserRole.admin){
-          Get.toNamed(RT_ADMIN_DASHBOARD);
-        }else{
+          if (Get.isDialogOpen ?? false) Get.back();
           Get.toNamed(RT_SIGNUP, arguments: mp);
-        }
       }
+      if (Get.isDialogOpen ?? false) Get.back();
+
       if (mapID["id"] != null) {
         if (registrationController.selectedRole == UserRole.admin) {
-          Get.toNamed(RT_ADMIN_DASHBOARD, arguments: mapID);
+          Get.offAllNamed(RT_ADMIN_DASHBOARD,arguments: mapID);
         } else if (registrationController.selectedRole == UserRole.projectManager) {
-          Get.toNamed(RT_MANAGER_DASHBOARD, arguments: mapID);
-        } else {
-          Get.toNamed(RT_MEMBER_DASHBOARD, arguments: mapID);
+          Get.offAllNamed(RT_MANAGER_DASHBOARD, arguments: mapID);
+        }
+        else {
+          Get.offAllNamed(RT_MEMBER_DASHBOARD, arguments: mapID);
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

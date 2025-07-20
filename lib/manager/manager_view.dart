@@ -1,6 +1,8 @@
 import 'package:syncraft/utils/import_export.dart';
 
 class ManagerView extends StatefulWidget {
+  const ManagerView({super.key});
+
   @override
   _ManagerViewState createState() => _ManagerViewState();
 }
@@ -8,7 +10,7 @@ class ManagerView extends StatefulWidget {
 class _ManagerViewState extends State<ManagerView> {
   final ManagerController controller = ManagerController();
   late ManagerModel project;
-
+  int managerID = Get.arguments?["id"];
   int totalTasks = 0;
   int completedTasks = 0;
   int inProgressTasks = 0;
@@ -18,6 +20,8 @@ class _ManagerViewState extends State<ManagerView> {
   @override
   void initState() {
     super.initState();
+    var mp = Get.arguments;
+    print("========= manager ========== $mp");
     project = ManagerModel(
       id: '1',
       managerName: 'Karan',
@@ -25,6 +29,8 @@ class _ManagerViewState extends State<ManagerView> {
       teamMembers: ['Alice', 'Bob', 'Charlie'],
       tasks: [],
     );
+
+    print("managerID = $managerID");
     controller.projects.add(project);
     _updateTaskCounts();
   }
@@ -51,7 +57,7 @@ class _ManagerViewState extends State<ManagerView> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Add Task'),
+        title: const Text('Add Task'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -59,18 +65,18 @@ class _ManagerViewState extends State<ManagerView> {
               controller: titleController,
               decoration: InputDecoration(labelText: 'Title', border: inputBorder),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: descriptionController,
               decoration: InputDecoration(labelText: 'Description', border: inputBorder),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             DropdownButtonFormField<String?>(
               value: assignedTo,
               isExpanded: true,
               decoration: InputDecoration(labelText: 'Assign To', border: inputBorder),
               items: [
-                DropdownMenuItem<String?>(value: null, child: Text("Unassigned (Visible to All)")),
+                const DropdownMenuItem<String?>(value: null, child: Text("Unassigned (Visible to All)")),
                 ...project.teamMembers.map((member) => DropdownMenuItem<String?>(value: member, child: Text(member))),
               ],
               onChanged: (value) => assignedTo = value,
@@ -91,7 +97,7 @@ class _ManagerViewState extends State<ManagerView> {
                 _updateTaskCounts();
               }
             },
-            child: Text('Add'),
+            child: const Text('Add'),
           )
         ],
       ),
@@ -110,7 +116,7 @@ class _ManagerViewState extends State<ManagerView> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit Task'),
+        title: const Text('Edit Task'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -118,18 +124,18 @@ class _ManagerViewState extends State<ManagerView> {
               controller: titleController,
               decoration: InputDecoration(labelText: 'Title', border: inputBorder),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: descriptionController,
               decoration: InputDecoration(labelText: 'Description', border: inputBorder),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             DropdownButtonFormField<String?>(
               value: assignedTo,
               isExpanded: true,
               decoration: InputDecoration(labelText: 'Assign To', border: inputBorder),
               items: [
-                DropdownMenuItem<String?>(value: null, child: Text("Unassigned (Visible to All)")),
+                const DropdownMenuItem<String?>(value: null, child: Text("Unassigned (Visible to All)")),
                 ...project.teamMembers.map((member) => DropdownMenuItem<String?>(value: member, child: Text(member))),
               ],
               onChanged: (value) => assignedTo = value,
@@ -151,7 +157,7 @@ class _ManagerViewState extends State<ManagerView> {
                 _updateTaskCounts();
               }
             },
-            child: Text('Save'),
+            child: const Text('Save'),
           ),
         ],
       ),
@@ -166,18 +172,18 @@ class _ManagerViewState extends State<ManagerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hello ${project.managerName}!!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+        title: Text("Hello ${project.managerName}!!", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(project.projectName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            Text(project.projectName, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             LinearProgressIndicator(value: controller.getProgress(project)),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text("Progress: ${(controller.getProgress(project) * 100).toStringAsFixed(0)}%"),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -185,7 +191,7 @@ class _ManagerViewState extends State<ManagerView> {
                 Text("Completed: $completedTasks"),
               ],
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -194,19 +200,19 @@ class _ManagerViewState extends State<ManagerView> {
                 Text("To Do: $todoTasks"),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _addTaskDialog,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 child: Text("Add Task", style: TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView(
                 children: [
@@ -227,8 +233,8 @@ class _ManagerViewState extends State<ManagerView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 8),
+        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
         if (tasks.isEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -237,8 +243,8 @@ class _ManagerViewState extends State<ManagerView> {
         else
           ...tasks.map((task) {
             return Container(
-              margin: EdgeInsets.symmetric(vertical: 6),
-              padding: EdgeInsets.all(12),
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(14),
@@ -253,7 +259,7 @@ class _ManagerViewState extends State<ManagerView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.comment),
+                          icon: const Icon(Icons.comment),
                           tooltip: 'View Comments',
                           onPressed: () {
                             Navigator.push(
@@ -269,12 +275,12 @@ class _ManagerViewState extends State<ManagerView> {
                           },
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(30),
                             border: Border.all(color: Colors.deepPurpleAccent, width: 1.5),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Colors.black12,
                                 blurRadius: 4,
@@ -285,8 +291,8 @@ class _ManagerViewState extends State<ManagerView> {
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               value: task.status,
-                              style: TextStyle(color: Colors.black),
-                              icon: Icon(Icons.arrow_drop_down, color: Colors.deepPurple),
+                              style: const TextStyle(color: Colors.black),
+                              icon: const Icon(Icons.arrow_drop_down, color: Colors.deepPurple),
                               items: ['pending', 'in progress', 'in review', 'completed']
                                   .map((status) => DropdownMenuItem(value: status, child: Text(status)))
                                   .toList(),
